@@ -1,0 +1,51 @@
+﻿@page "/Signup"
+
+@*"/signup/{Username}" for using route parameter*@
+@inherits SignUpBase
+ 
+<div class="sign-form">
+    <EditForm EditContext="@EditContext"
+              OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <div class="sign-validation">
+            <ValidationInput @bind-Value="@User.Username"
+                             Error="@GetError(() => User.Username)"
+                             placeholder="Username"
+                             type="text" />
+        </div>
+        <div class="sign-validation">
+            <ValidationInput @bind-Value="@User.Password"
+                             Error="@GetError(() => User.Password)"
+                             placeholder="Password"
+                             type="password" />
+        </div>
+        <div class="sign-validation">
+            <ValidationInput @bind-Value="@User.FirstName"
+                             Error="@GetError(() => User.FirstName)"
+                             placeholder="First name"
+                             type="text" />
+        </div>
+        <div class="sign-validation">
+            <ValidationInput @bind-Value="@User.LastName"
+                             Error="@GetError(() => User.LastName)"
+                             placeholder="Last name"
+                             type="text" />
+        </div>
+        <div class="sign-validation">
+            <ValidationInput @bind-Value="@User.PhoneNumber"
+                             Error="@GetError(() => User.PhoneNumber)"
+                             placeholder="Phone"
+                             type="text" />
+        </div>
+        <div class="sign-validation">
+            <Dropdown TValue="Organize.Shared.Enums.GenderTypeEnum"
+                      @bind-SelectedItem="@SelectedGenderTypeDropdownItem"
+                      SelectableItems="@GenderTypeDropdownItems"></Dropdown>
+        </div>
+        <button class="sign-button btn btn-primary" type="submit">Sign up</button>
+    </EditForm>
+    <div class="signup">
+        Already have an account?
+        <a href="/signin">Sign in!</a>
+    </div>
+</div>
