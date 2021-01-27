@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Organize.WASM.Components
@@ -20,6 +21,7 @@ namespace Organize.WASM.Components
     {
       base.OnInitialized();
       UserItems = CurrentUserService.CurrentUser.UserItems;
+      Console.WriteLine(JsonSerializer.Serialize(UserItems));
     }
   }
 }

@@ -1,5 +1,7 @@
-﻿<h3>ItemsList</h3>
-
-@code {
-
-}
+﻿
+<div>
+    @foreach (var item in UserItems)
+    {
+        <ItemElement TItem="Organize.Shared.Entities.BaseItem" Item="@item"></ItemElement>
+    }
+</div>
