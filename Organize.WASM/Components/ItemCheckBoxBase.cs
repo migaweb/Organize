@@ -9,6 +9,8 @@ namespace Organize.WASM.Components
 {
   public partial class ItemCheckBoxBase : ComponentBase
   {
+    [CascadingParameter]
+    public string ColorPrefix { get; set; }
     [Parameter]
     public BaseItem Item { get; set; }
   }

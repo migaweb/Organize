@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/components/ItemCheckBox.css",
+    "inputFile": "wwwroot/css/components/ItemCheckBox.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/components/ItemElement.css",
+    "inputFile": "wwwroot/css/components/ItemElement.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/components/itemsList.css",
+    "inputFile": "wwwroot/css/components/itemsList.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/components/sign.css",
+    "inputFile": "wwwroot/css/components/sign.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/app.css",
+    "inputFile": "wwwroot/css/app.scss"
+  }
+]

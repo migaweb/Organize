@@ -1,16 +1,18 @@
 ﻿@typeparam TItem
 
 <div class="item-element">
-    <div class="item-element-main">
+    <div class="item-element-main @ColorPrefix-background">
         <div class="check-container">
             <div class="checkbox">
                 <ItemCheckBox Item="Item"></ItemCheckBox>
             </div>
         </div>
         <div class="main-container">
-            <div class="main-fragment"></div>
+            <div class="main-fragment">
+                @MainFragment
+            </div>
             <div class="position">
-                @Item.Position/x
+                @Item.Position/@TotalNumber
             </div>
         </div>
         <div class="arrow-container" 
@@ -25,6 +27,8 @@
         </div>
     </div>
     <div class="collapse w-100" id="@DetailAreaId">
-        XXX
+        <div class="detail-fragment @ColorPrefix-border-color">
+            @DetailFragment
+        </div>
     </div>
 </div>
