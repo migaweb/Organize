@@ -7,6 +7,12 @@ namespace Organize.Shared.Entities
 {
   public class ParentItem : BaseItem
   {
-    public ObservableCollection<ChildItem> ChildItems { get; set; }
+    private ObservableCollection<ChildItem> _childItems;
+
+    public ObservableCollection<ChildItem> ChildItems 
+    { 
+      get => _childItems;
+      set => SetProperty(ref _childItems, value);
+    }
   }
 }

@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organize.DataAccess", "Orga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organize.Shared", "Organize.Shared\Organize.Shared.csproj", "{037F2E28-BC46-4CCA-AE1A-8C5D47A6B4E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneralUi", "GeneralUi\GeneralUi.csproj", "{D7C77ED1-F423-42F9-8BF7-0F1CE354A2A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralUi", "GeneralUi\GeneralUi.csproj", "{D7C77ED1-F423-42F9-8BF7-0F1CE354A2A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organize.TestFake", "Organize.TestFake\Organize.TestFake.csproj", "{8973F925-D0D6-4A2E-89BC-DD2FF0124FF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organize.TestFake", "Organize.TestFake\Organize.TestFake.csproj", "{8973F925-D0D6-4A2E-89BC-DD2FF0124FF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

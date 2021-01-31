@@ -8,7 +8,10 @@
             </div>
         </div>
         <div class="main-container">
-            <div class="main-fragment">
+            <div class="main-fragment @(Item.IsDone ? "crossed-out" : "")" 
+                 @onclick="OpenItemInEditMode" 
+                 @onclick:stopPropagation>
+                <!-- Prevents closing the edit item as these events are called one after the other -->
                 @MainFragment
             </div>
             <div class="position">

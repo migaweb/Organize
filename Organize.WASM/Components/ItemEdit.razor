@@ -1,0 +1,41 @@
+﻿<div class="item-create-info">
+    <div class="item-create-info-text">@Item.ItemTypeEnum.ToString()</div>
+    <div class="item-create-info-count">@Item.Position/@TotalNumber</div>
+</div>
+
+<label for="title">Title</label>
+<input id="title" type="text" 
+       class="item-create-input" 
+       @bind-value="@Item.Title" 
+       @bind-value:event="oninput"
+       />
+
+@switch (Item)
+{
+    case TextItem textItem:
+        <label for="subtitle">Subtitle</label>
+        <input id="subtitle" class="item-create-input" 
+               @bind-value="@textItem.SubTitle" 
+               @bind-value:event="oninput"
+               />
+        
+        <label for="details">Details</label>
+        <textarea id="details" type="text"
+                  class="item-create-input" 
+                  @bind-value="@textItem.Detail"
+                  @bind-value:event="oninput"
+                  ></textarea>
+        break;
+    case UrlItem urlItem:
+        <label for="url">Url</label>
+        <input id="url" type="text"
+               class="item-create-input"
+               @bind-value="@urlItem.Url"
+               @bind-value:event="oninput"
+               />
+        <a class="orga-button" href="@urlItem.Url" target="_blank">Open</a>
+        break;
+    case ParentItem parentItem:
+        <ChildItemEdit ParentItem="parentItem"></ChildItemEdit>
+        break;
+}
