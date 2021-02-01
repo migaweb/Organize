@@ -12,6 +12,9 @@ namespace Organize.WASM.Pages
     protected string Day { get; } = DateTime.Now.DayOfWeek.ToString();
 
     [Inject]
+    private ICurrentUserService CurrentUserService { get; set; }
+
+    [Inject]
     private NavigationManager NavigationManager { get; set; }
 
     [Inject]
@@ -40,6 +43,7 @@ namespace Organize.WASM.Pages
 
       if (foundUser != null)
       {
+        CurrentUserService.CurrentUser = foundUser;
         NavigationManager.NavigateTo("items");
       }
     }

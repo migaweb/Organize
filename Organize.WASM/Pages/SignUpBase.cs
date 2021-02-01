@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
+using Organize.Shared.Contracts;
 using Organize.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,9 @@ namespace Organize.WASM.Pages
 {
   public class SignUpBase : SignBase
   {
+    [Inject]
+    private IUserManager UserManager { get; set; }
+
     [Inject]
     private NavigationManager NavigationManager { get; set; }
 
@@ -53,9 +57,9 @@ namespace Organize.WASM.Pages
       }
     }
 
-    protected void OnValidSubmit()
+    protected async void OnValidSubmit()
     {
-      // TODO: create user
+      await UserManager.InsertUserAsync(User);
 
       NavigationManager.NavigateTo("signin");
     }
