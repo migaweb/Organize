@@ -4,6 +4,7 @@ using Organize.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,14 +12,44 @@ namespace Organize.Business
 {
   public class UserItemManager : IUserItemManager
   {
+    private IItemDataAccess _itemDataAccess;
+
+    public UserItemManager(IItemDataAccess itemDataAccess)
+    {
+      _itemDataAccess = itemDataAccess;
+    }
+
+    public async Task RetrieveAllUserItemsOfUserAndSetToUserAsync(User user)
+    {
+      var allItems = new List<BaseItem>();
+
+      var textItems = await _itemDataAccess.GetItemsOfUserAsync<TextItem>(user.Id);
+      var urlItems = await _itemDataAccess.GetItemsOfUserAsync<UrlItem>(user.Id);
+      var parentItems = await _itemDataAccess.GetItemsOfUserAsync<ParentItem>(user.Id);
+      var parentItemsList = parentItems.ToList();
+      foreach (var parentItem in parentItemsList)
+      {
+        var childItems = await _itemDataAccess.GetItemsOfUserAsync<ChildItem>(parentItem.Id);
+        parentItem.ChildItems = new ObservableCollection<ChildItem>(childItems.OrderBy(c => c.Position));
+      }
+
+      allItems.AddRange(textItems);
+      allItems.AddRange(urlItems);
+      allItems.AddRange(parentItems);
+
+      user.UserItems = new ObservableCollection<BaseItem>(allItems.OrderBy(i => i.Position));
+    }
+
     public async Task<ChildItem> CreateNewChildItemAndAddItParentItemAsync(ParentItem parent)
     {
-      var childtItem = new ChildItem();
-      childtItem.ParentId = parent.Id;
-      childtItem.ItemTypeEnum = Shared.Enums.ItemTypeEnum.Child;
+      var childItem = new ChildItem();
+      childItem.ParentId = parent.Id;
+      childItem.ItemTypeEnum = Shared.Enums.ItemTypeEnum.Child;
 
-      parent.ChildItems.Add(childtItem);
-      return await Task.FromResult(childtItem);
+      await _itemDataAccess.InsertItemAsync(childItem);
+
+      parent.ChildItems.Add(childItem);
+      return childItem;
     }
 
     public async Task<BaseItem> CreateNewUserItemAndAddItToUserAsync(User user, ItemTypeEnum typeEnum)
@@ -36,6 +67,7 @@ namespace Organize.Business
         case ItemTypeEnum.Parent:
           var parent = await CreateAndInsertItemAsync<ParentItem>(user, typeEnum);
           parent.ChildItems = new ObservableCollection<ChildItem>();
+          item = parent;
           break;
       }
 
@@ -49,10 +81,58 @@ namespace Organize.Business
       item.ItemTypeEnum = typeEnum;
       item.Position = user.UserItems.Count + 1;
       item.ParentId = user.Id;
-      item.Id = user.UserItems.Count + 1;
-      // TODO: Add to storage provider
+      //item.Id = user.UserItems.Count + 1;
 
-      return await Task.FromResult(item);
+      await _itemDataAccess.InsertItemAsync(item);
+
+      return item;
+    }
+
+    public async Task UpdateAsync<T>(T item) where T : BaseItem
+    {
+      switch (item)
+      {
+        case TextItem textItem:
+          await _itemDataAccess.UpdateItemAsync(textItem);
+          break;
+        case UrlItem urlItem:
+          await _itemDataAccess.UpdateItemAsync(urlItem);
+          break;
+        case ParentItem parentItem:
+          await _itemDataAccess.UpdateItemAsync(parentItem);
+          break;
+        case ChildItem childItem:
+          await _itemDataAccess.UpdateItemAsync(childItem);
+          break;
+      }
+    }
+
+    public async Task DeleteAllDoneAsync(User user)
+    {
+      var doneItems = user.UserItems.Where(e => e.IsDone).ToList();
+      Console.WriteLine("Done items count: " + doneItems.Count);
+
+      var doneParentItems = doneItems.OfType<ParentItem>().ToList();
+      var allChildItems = doneParentItems.SelectMany(e => e.ChildItems).ToList();
+
+      await _itemDataAccess.DeleteItemsAsync(allChildItems);
+      await _itemDataAccess.DeleteItemsAsync(doneParentItems);
+      await _itemDataAccess.DeleteItemsAsync(doneItems.OfType<TextItem>());
+      await _itemDataAccess.DeleteItemsAsync(doneItems.OfType<UrlItem>());
+
+      foreach (var doneItem in doneItems)
+      {
+        user.UserItems.Remove(doneItem);
+      }
+
+      var sortedByPosition = user.UserItems.OrderBy(e => e.Position);
+      var position = 1;
+      foreach (var item in sortedByPosition)
+      {
+        item.Position = position;
+        position++;
+        await UpdateAsync(item);
+      }
     }
   }
 }

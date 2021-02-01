@@ -7,8 +7,10 @@ using Organize.Shared.Enums;
 using Organize.WASM.ItemEdit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Organize.WASM.Components
 {
@@ -16,6 +18,7 @@ namespace Organize.WASM.Components
   {
     private BaseItem Item { get; set; } = new BaseItem();
     private int TotalNumber { get; set; }
+    private Timer _debounceTimer;
 
     //[Inject]
     //private ItemEditService ItemEditService { get; set; }
@@ -23,17 +26,34 @@ namespace Organize.WASM.Components
     private NavigationManager NavigationManager { get; set; }
     [Inject]
     private ICurrentUserService CurrentUserService { get; set; }
+    [Inject]
+    private IUserItemManager UserItemManager { get; set; }
 
     protected override void OnInitialized()
     {
       base.OnInitialized();
+      _debounceTimer = new Timer();
+      _debounceTimer.Interval = 500;
+      _debounceTimer.AutoReset = false;
+      _debounceTimer.Elapsed += HandleDebounceTimerElapsed;
       //ItemEditService.EditeItemChanged += HandleEditItemChanged;
       //Item = ItemEditService.EditItem;
       SetDataFromUri();
     }
 
+    private void HandleDebounceTimerElapsed(object sender, ElapsedEventArgs e)
+    {
+      Console.WriteLine("Timer elapsed.");
+      UserItemManager.UpdateAsync(Item);
+    }
+
     private void SetDataFromUri()
     {
+      if (Item != null)
+      {
+        Item.PropertyChanged -= HandleItemPropertyChanged;
+      }
+
       var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
       var segmentCount = uri.Segments.Length;
 
@@ -43,9 +63,8 @@ namespace Organize.WASM.Components
       {
         var userItem = CurrentUserService.CurrentUser
                                          .UserItems
-                                         .Where(e => e.ItemTypeEnum == (ItemTypeEnum)typeEnum)
-                                         .Where(e => e.Id == id)
-                                         .SingleOrDefault();
+                                         .Where(e => e.ItemTypeEnum == (ItemTypeEnum)typeEnum && e.Id == id)
+                                         .FirstOrDefault();
 
         // Not found? Redirect to items
         if (userItem == null)
@@ -56,9 +75,19 @@ namespace Organize.WASM.Components
         else
         {
           Item = userItem;
+          Item.PropertyChanged += HandleItemPropertyChanged;
           NavigationManager.LocationChanged += HandleLocationChanged;
           StateHasChanged();
         }
+      }
+    }
+
+    private void HandleItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (_debounceTimer != null)
+      {
+        _debounceTimer.Stop();
+        _debounceTimer.Start();
       }
     }
 
@@ -69,12 +98,24 @@ namespace Organize.WASM.Components
 
     public void Dispose()
     {
+      _debounceTimer?.Dispose();
       NavigationManager.LocationChanged -= HandleLocationChanged;
+
+      if (Item != null)
+      {
+        Item.PropertyChanged -= HandleItemPropertyChanged;
+      }
     }
 
     //private void HandleEditItemChanged(object sender, ItemEditEventArgs e)
     //{
+    //  if (Item != null)
+    //  {
+    //    Item.PropertyChanged -= HandleItemPropertyChanged;
+    //  }
+
     //  Item = e.Item;
+    //  Item.PropertyChanged += HandleItemPropertyChanged;
     //  StateHasChanged();
     //}
   }

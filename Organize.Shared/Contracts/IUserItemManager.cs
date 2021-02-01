@@ -11,5 +11,8 @@ namespace Organize.Shared.Contracts
   {
     Task<ChildItem> CreateNewChildItemAndAddItParentItemAsync(ParentItem parent);
     Task<BaseItem> CreateNewUserItemAndAddItToUserAsync(User user, ItemTypeEnum typeEnum);
+    Task RetrieveAllUserItemsOfUserAndSetToUserAsync(User user);
+    Task UpdateAsync<T>(T item) where T : BaseItem;
+    Task DeleteAllDoneAsync(User user);
   }
 }

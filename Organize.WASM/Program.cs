@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Organize.Business;
+using Organize.DataAccess;
 using Organize.Shared.Contracts;
 using Organize.TestFake;
 using Organize.WASM.ItemEdit;
@@ -26,14 +27,28 @@ namespace Organize.WASM
       //builder.Services.AddSingleton<IUserManager, UserManager>();
       builder.Services.AddScoped<IUserManager, UserManagerFake>();
       builder.Services.AddScoped<IUserItemManager, UserItemManager>();
+      builder.Services.AddScoped<IItemDataAccess, ItemDataAccess>();
+      builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
       builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
       builder.Services.AddScoped<ItemEditService>();
 
       var host = builder.Build();
 
+      var persistenceService = host.Services.GetRequiredService<IPersistenceService>();
+      await persistenceService.InitAsync();
+
       var currentUserService = host.Services.GetRequiredService<ICurrentUserService>();
-      TestData.CreateTestUser();
-      currentUserService.CurrentUser = TestData.TestUser;
+      var userItemManager = host.Services.GetRequiredService<IUserItemManager>();
+
+      if (persistenceService is InMemoryStorage.InMemoryStorage)
+      {
+        Console.WriteLine("Ja");
+        TestData.CreateTestUser(userItemManager);
+        currentUserService.CurrentUser = TestData.TestUser;
+        Console.WriteLine("Test User Items: " + TestData.TestUser.UserItems.Count);
+        Console.WriteLine("Items: " + currentUserService.CurrentUser.UserItems.Count);
+
+      }
 
       await host.RunAsync();
     }
