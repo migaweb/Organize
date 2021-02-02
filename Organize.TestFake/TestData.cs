@@ -16,10 +16,10 @@ namespace Organize.TestFake
     {
       var user = new User();
       user.Id = 123;
-      user.Username = "John";
-      user.FirstName = "John";
+      user.Username = "micke";
+      user.FirstName = "Micke";
       user.LastName = "Smith";
-      user.Password = "test";
+      user.Password = "_micke";
       user.GenderType = GenderTypeEnum.Male;
       user.UserItems = new ObservableCollection<BaseItem>();
 

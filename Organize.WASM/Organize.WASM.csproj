@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Organize.InMemoryStorage\Organize.InMemoryStorage.csproj" />
     <ProjectReference Include="..\Organize.Shared\Organize.Shared.csproj" />
     <ProjectReference Include="..\Organize.TestFake\Organize.TestFake.csproj" />
+    <ProjectReference Include="..\Organize.WebAPIAccess\Organize.WebAPIAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

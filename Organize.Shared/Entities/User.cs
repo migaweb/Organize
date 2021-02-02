@@ -24,6 +24,8 @@ namespace Organize.Shared.Entities
 
     public GenderTypeEnum GenderType { get; set; }
 
+    public string Token { get; set; }
+
     public ObservableCollection<BaseItem> UserItems { get; set; }
 
     public override string ToString()

@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organize.InMemoryStorage", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organize.IndexedDB", "Organize.IndexedDB\Organize.IndexedDB.csproj", "{9808B651-4B2F-4EFB-8CB4-45B1186470F5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organize.WebApi", "Organize.WebApi\Organize.WebApi.csproj", "{4D81DA47-B960-486D-B49D-9862C8D3905D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organize.WebAPIAccess", "Organize.WebAPIAccess\Organize.WebAPIAccess.csproj", "{16624D4C-C2D3-4EBD-A6C4-5B6346F70812}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{9808B651-4B2F-4EFB-8CB4-45B1186470F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9808B651-4B2F-4EFB-8CB4-45B1186470F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9808B651-4B2F-4EFB-8CB4-45B1186470F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D81DA47-B960-486D-B49D-9862C8D3905D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D81DA47-B960-486D-B49D-9862C8D3905D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D81DA47-B960-486D-B49D-9862C8D3905D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D81DA47-B960-486D-B49D-9862C8D3905D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16624D4C-C2D3-4EBD-A6C4-5B6346F70812}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16624D4C-C2D3-4EBD-A6C4-5B6346F70812}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16624D4C-C2D3-4EBD-A6C4-5B6346F70812}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16624D4C-C2D3-4EBD-A6C4-5B6346F70812}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

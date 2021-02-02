@@ -17,21 +17,33 @@ namespace Organize.WASM
 {
   public class Program
   {
+    private static bool _isApiPerstance = true;
+
     public static async Task Main(string[] args)
     {
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
       builder.RootComponents.Add<App>("#app");
 
-      builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+      if (_isApiPerstance)
+      {
+        builder.Services.AddScoped(sp => 
+        new HttpClient { BaseAddress = new Uri(builder.Configuration["apiAddress"]) });
+
+        builder.Services.AddScoped<IPersistenceService, WebAPIAccess.WebAPIAccess>();
+        builder.Services.AddScoped<IUserDataAccess, WebAPIAccess.WebAPIUserDataAccess>();
+      }
+      else
+      {
+        //builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
+        builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
+        builder.Services.AddScoped<IUserDataAccess, UserDataAccess>();
+      }
+
 
       builder.Services.AddScoped<IUserManager, UserManager>();
       //builder.Services.AddScoped<IUserManager, UserManagerFake>();
       builder.Services.AddScoped<IUserItemManager, UserItemManager>();
       builder.Services.AddScoped<IItemDataAccess, ItemDataAccess>();
-      builder.Services.AddScoped<IUserDataAccess, UserDataAccess>();
-
-      //builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
-      builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
       
       builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
       
