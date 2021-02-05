@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using GeneralUi.BusyOverlay;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using Organize.Shared.Contracts;
+using Organize.WASM.OrganizeAuthenticationStateProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +21,44 @@ namespace Organize.WASM.Shared
     [Inject]
     private IJSRuntime JSRuntime { get; set; }
 
+    [Inject]
+    private IUserItemManager UserItemManager { get; set; }
+
+    [Inject]
+    private IAuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+    [Inject]
+    public BusyOverlayService BusyOverlayService { get; set; }
+
+    private bool IsAuthenticated { get; set; } = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     public bool UseShortNavText { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+      
+      await base.OnParametersSetAsync();
+      var authState = await AuthenticationStateTask;
+      IsAuthenticated = authState.User.Identity.IsAuthenticated;
+
+      if (!IsAuthenticated || CurrentUserService.CurrentUser.IsUserItemsPropertyLoaded)
+      {
+        return;
+      }
+
+      try
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.Busy);
+        await UserItemManager.RetrieveAllUserItemsOfUserAndSetToUserAsync(CurrentUserService.CurrentUser);
+      }
+      finally
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.NotBusy);
+      }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,12 +68,12 @@ namespace Organize.WASM.Shared
       CheckUsesShortNavText(width);
 
       _dotNetReference = DotNetObjectReference.Create(this);
-      await JSRuntime.InvokeVoidAsync("blazorResize.registerReferenceForResizeEvent", _dotNetReference);
+      await JSRuntime.InvokeVoidAsync("blazorResize.registerReferenceForResizeEvent", nameof(MainLayout), _dotNetReference);
     }
 
     protected void SignOut()
     {
-
+      AuthenticationStateProvider.UnsetUser();
     }
 
     [JSInvokable]
@@ -58,10 +98,11 @@ namespace Organize.WASM.Shared
       }
     }
 
-    public void Dispose()
+    public async void Dispose()
     {
       // .NET references needs to be disposed. Not so important just here.
       _dotNetReference?.Dispose();
+      await JSRuntime.InvokeVoidAsync("blazorResize.unRegister", nameof(MainLayout));
     }
   }
 }

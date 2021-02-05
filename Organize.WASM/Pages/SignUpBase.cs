@@ -1,9 +1,13 @@
-﻿using GeneralUi.DropdownControl;
+﻿using Blazored.Modal;
+using Blazored.Modal.Services;
+using GeneralUi.BusyOverlay;
+using GeneralUi.DropdownControl;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using Organize.Shared.Contracts;
 using Organize.Shared.Enums;
+using Organize.WASM.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +22,12 @@ namespace Organize.WASM.Pages
 
     [Inject]
     private NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public BusyOverlayService BusyOverlayService { get; set; }
+
+    [Inject]
+    public IModalService ModalService { get; set; }
 
     protected IList<DropdownItem<GenderTypeEnum>> GenderTypeDropdownItems { get; } = new List<DropdownItem<GenderTypeEnum>>();
 
@@ -59,9 +69,25 @@ namespace Organize.WASM.Pages
 
     protected async void OnValidSubmit()
     {
-      await UserManager.InsertUserAsync(User);
 
-      NavigationManager.NavigateTo("signin");
+      try
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.Busy);
+        User.GenderType = SelectedGenderTypeDropdownItem.ItemObject;
+        await UserManager.InsertUserAsync(User);
+
+        NavigationManager.NavigateTo("signin");
+      }
+      catch (Exception ex)
+      {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ModalMessage.Message), ex.Message);
+        ModalService.Show<ModalMessage>("Error", parameters);
+      }
+      finally
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.Busy);
+      }
     }
   }
 }

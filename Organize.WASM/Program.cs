@@ -1,3 +1,8 @@
+using Blazored.LocalStorage;
+using Blazored.Modal;
+using Blazored.Toast;
+using GeneralUi.BusyOverlay;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +12,7 @@ using Organize.DataAccess;
 using Organize.Shared.Contracts;
 using Organize.TestFake;
 using Organize.WASM.ItemEdit;
+using Organize.WASM.OrganizeAuthenticationStateProvider;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -17,12 +23,20 @@ namespace Organize.WASM
 {
   public class Program
   {
-    private static bool _isApiPerstance = true;
+    private static bool _isApiPerstance = false;
 
     public static async Task Main(string[] args)
     {
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
       builder.RootComponents.Add<App>("#app");
+
+      builder.Services.AddOptions();
+      builder.Services.AddAuthorizationCore();
+
+      builder.Services.AddBlazoredLocalStorage();
+      builder.Services.AddBlazoredModal();
+      builder.Services.AddBlazoredToast();
+      builder.Services.AddScoped<BusyOverlayService>();
 
       if (_isApiPerstance)
       {
@@ -31,12 +45,25 @@ namespace Organize.WASM
 
         builder.Services.AddScoped<IPersistenceService, WebAPIAccess.WebAPIAccess>();
         builder.Services.AddScoped<IUserDataAccess, WebAPIAccess.WebAPIUserDataAccess>();
+        builder.Services.AddScoped<WebAPIAuthenticationStateProvider>();
+        builder.Services.AddScoped<IAuthenticationStateProvider>(
+          provider => provider.GetRequiredService<WebAPIAuthenticationStateProvider>());
+        // For the cascading state provider
+        builder.Services.AddScoped<AuthenticationStateProvider>(
+          provider => provider.GetRequiredService<WebAPIAuthenticationStateProvider>());
       }
       else
       {
-        //builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
-        builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
+        builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
+        //builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
         builder.Services.AddScoped<IUserDataAccess, UserDataAccess>();
+
+        builder.Services.AddScoped<SimpleAuthenticationStateProvider>();
+        builder.Services.AddScoped<IAuthenticationStateProvider>(
+          provider => provider.GetRequiredService<SimpleAuthenticationStateProvider>());
+        // For the cascading state provider
+        builder.Services.AddScoped<AuthenticationStateProvider>(
+          provider => provider.GetRequiredService<SimpleAuthenticationStateProvider>());
       }
 
 
@@ -56,11 +83,12 @@ namespace Organize.WASM
 
       var currentUserService = host.Services.GetRequiredService<ICurrentUserService>();
       var userItemManager = host.Services.GetRequiredService<IUserItemManager>();
+      var userManager = host.Services.GetRequiredService<IUserManager>();
 
       if (persistenceService is InMemoryStorage.InMemoryStorage)
       {
         Console.WriteLine("Ja");
-        TestData.CreateTestUser(userItemManager);
+        TestData.CreateTestUser(userItemManager, userManager);
         currentUserService.CurrentUser = TestData.TestUser;
         Console.WriteLine("Test User Items: " + TestData.TestUser.UserItems.Count);
         Console.WriteLine("Items: " + currentUserService.CurrentUser.UserItems.Count);

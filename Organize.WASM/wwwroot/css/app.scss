@@ -5,6 +5,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
 }
 
 .main {
@@ -12,11 +13,16 @@ html, body {
     height: 100%;
 }
 
+.crossed-out {
+    text-decoration: line-through;
+}
+
 .orga-button {
     background: $primary-color;
     color: white;
     @extend .btn;
 }
+
 
 .primary-background {
     background: $primary-color;
@@ -28,6 +34,18 @@ html, body {
     background: $tertiary-color;
 }
 
+.primary-background-disabled {
+    background: $primary-color-disabled;
+}
+
+.secondary-background-disabled {
+    background: $secondary-color-disabled;
+}
+
+.tertiary-background-disabled {
+    background: $tertiary-color-disabled;
+}
+
 .primary-border-color {
     border-color: $primary-color;
 }
@@ -36,6 +54,18 @@ html, body {
 }
 .tertiary-border-color {
     border-color: $tertiary-color;
+}
+
+.primary-border-color-disabled {
+    border-color: $primary-color-disabled;
+}
+
+.secondary-border-color-disabled {
+    border-color: $secondary-color-disabled;
+}
+
+.tertiary-border-color-disabled {
+    border-color: $tertiary-color-disabled;
 }
 
 /*Navbar*/

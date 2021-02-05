@@ -24,9 +24,12 @@ namespace Organize.Shared.Entities
 
     public GenderTypeEnum GenderType { get; set; }
 
+    public bool IsUserItemsPropertyLoaded { get; set; } = false;
+
     public string Token { get; set; }
 
-    public ObservableCollection<BaseItem> UserItems { get; set; }
+    public ObservableCollection<BaseItem> UserItems { get => _userItems; set => SetProperty(ref _userItems, value); }
+    private ObservableCollection<BaseItem> _userItems = new ObservableCollection<BaseItem>();
 
     public override string ToString()
     {

@@ -9,11 +9,26 @@ window.blazorDimension = {
 };
 
 window.blazorResize = {
-    registerReferenceForResizeEvent: (dotnetReference) => {
-        console.log(blazorResize.assignments);
-        window.addEventListener("resize", () => {
-            //console.log('Handle resize from JS');
+    assignments: [],
+
+    registerReferenceForResizeEvent: (name, dotnetReference) => {
+        const handler = () => {
+            console.log("Handle resize from JS");
             dotnetReference.invokeMethodAsync("HandleResize", window.innerWidth, window.innerHeight);
-        });
+        };
+        const assignment = {
+            name: name,
+            handler: handler
+        };
+        blazorResize.assignments.push(assignment);
+        console.log(blazorResize.assignments);
+        window.addEventListener("resize", assignment.handler);
+    },
+    unRegister: (name) => {
+        const assignment = blazorResize.assignments.find(a => a.name === name);
+        if (assignment != null) {
+            console.log(assignment);
+            window.removeEventListener("resize", assignment.handler);
+        }
     }
 };

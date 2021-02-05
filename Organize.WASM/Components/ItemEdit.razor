@@ -1,6 +1,10 @@
 ﻿<div class="item-create-info">
     <div class="item-create-info-text">@Item.ItemTypeEnum.ToString()</div>
-    <div class="item-create-info-count">@Item.Position/@TotalNumber</div>
+    <ObservableCollectionObserver TProp="BaseItem" 
+                                  Collection="CurrentUserService.CurrentUser.UserItems" 
+                                  ObserveChildren="false">
+        <div class="item-create-info-count">@Item.Position/@CurrentUserService.CurrentUser.UserItems.Count</div>
+    </ObservableCollectionObserver>
 </div>
 
 <label for="title">Title</label>

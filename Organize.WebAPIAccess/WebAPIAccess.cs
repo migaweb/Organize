@@ -19,6 +19,15 @@ namespace Organize.WebAPIAccess
       _httpClient = httpClient;
     }
 
+    public async Task<User> GetUserByTokenAsync()
+    {
+      var response = await _httpClient.GetAsync("api/users/");
+      await ThrowExceptionIfResponseIsNotSuccessfulAsync(response);
+      var foundUser = await response.Content.ReadFromJsonAsync<User>();
+
+      return foundUser;
+    }
+
     public async Task<User> AuthenticateAndGetUserAsync(User user)
     {
       var response = await _httpClient.PostAsJsonAsync<User>("api/users/authenticate", user);

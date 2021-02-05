@@ -37,6 +37,7 @@ namespace Organize.Business
       allItems.AddRange(urlItems);
       allItems.AddRange(parentItems);
 
+      user.IsUserItemsPropertyLoaded = true;
       user.UserItems = new ObservableCollection<BaseItem>(allItems.OrderBy(i => i.Position));
     }
 

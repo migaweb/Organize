@@ -1,39 +1,40 @@
-﻿@page "/Signin" 
+﻿@page "/Signin"
+@page "/"
 @inherits SigninBase
+@layout UnAuthLayout
 <div class="sign-form">
     <p class="welcome-text">Hello there @(String.IsNullOrEmpty(User.Username) ? "User" : User.Username) - Today is @Day!</p>
     <EditForm EditContext="EditContext"
               OnSubmit="OnSubmit">
         <DataAnnotationsValidator />
         @*<InputText type="text"
-                   @bind-Value="User.Username"
-                   class="sign-input form-control"
-                   placeholder="Username" />
-        <ValidationMessage For="@(() => User.Username)" />*@
+                       @bind-Value="User.Username"
+                       class="sign-input form-control"
+                       placeholder="Username" />
+            <ValidationMessage For="@(() => User.Username)" />*@
         @*<InputText type="password"
-                   @bind-Value="User.Password"
-                   class="sign-input form-control"
-                   placeholder="Password" />
-        <ValidationMessage For="@(() => User.Password)" />*@
+                       @bind-Value="User.Password"
+                       class="sign-input form-control"
+                       placeholder="Password" />
+            <ValidationMessage For="@(() => User.Password)" />*@
         <div class="sign-validation">
 
             <ValidationInput @bind-Value="@User.Username"
                              Error="@GetError(() => User.Username)"
                              placeholder="Username"
-                             type="text"
-                             />
+                             type="text" />
         </div>
         <div class="sign-validation">
 
             <ValidationInput @bind-Value="@User.Password"
                              Error="@GetError(() => User.Password)"
                              placeholder="Password"
-                             type="password"
-                             />
+                             type="@(ShowPassword ? "text" : "password")" />
+            <input type="checkbox" @bind="ShowPassword" /> Show password
 
         </div>
 
-            <button class="sign-button btn btn-primary" type="submit">Sign in</button>
+        <button class="sign-button btn btn-primary" type="submit">Sign in</button>
     </EditForm>
 
     <div class="signup">

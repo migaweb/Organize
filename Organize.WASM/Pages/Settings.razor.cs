@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using GeneralUi.BusyOverlay;
+using Microsoft.AspNetCore.Components;
 using Organize.Shared.Contracts;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,21 @@ namespace Organize.WASM.Pages
     [Inject]
     private NavigationManager NavigationManager { get; set; }
 
+    [Inject]
+    public BusyOverlayService BusyOverlayService { get; set; }
+
     private async void DeleteAllDone()
     {
-      await UserItemManager.DeleteAllDoneAsync(CurrentUserService.CurrentUser);
-      NavigationManager.NavigateTo("/items");
+      try
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.Busy);
+        await UserItemManager.DeleteAllDoneAsync(CurrentUserService.CurrentUser);
+        NavigationManager.NavigateTo("/items");
+      }
+      finally
+      {
+        BusyOverlayService.SetBusyState(BusyEnum.NotBusy);
+      }
     }
   }
 }

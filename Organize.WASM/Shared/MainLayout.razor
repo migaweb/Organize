@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
-@*<div class="page">*@
    
+@if (IsAuthenticated)
+{
     <nav class="navbar navbar-light justify-content-between fixed-top">
         <a class="navbar-brand" href="/items">
             <img src="/images/blazor.png" width="30" height="30" class="d-inline-block align-top" />
@@ -9,7 +10,8 @@
             @if (UseShortNavText)
             {
                 @:Hello
-            } else
+            }
+            else
             {
                 @:Hello @CurrentUserService.CurrentUser
             }
@@ -25,8 +27,12 @@
         </form>
     </nav>
     <div class="main">
-        <div class="content px-4">
-            @Body
-        </div>
+        @Body
     </div>
-@*</div>*@
+}
+else
+{
+    <div class="main">
+        <a href="/signin">Please go to the sign in page</a>
+    </div>
+}
