@@ -54,8 +54,8 @@ namespace Organize.WASM
       }
       else
       {
-        builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
-        //builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
+        //builder.Services.AddScoped<IPersistenceService, InMemoryStorage.InMemoryStorage>();
+        builder.Services.AddScoped<IPersistenceService, IndexedDB.IndexedDB>();
         builder.Services.AddScoped<IUserDataAccess, UserDataAccess>();
 
         builder.Services.AddScoped<SimpleAuthenticationStateProvider>();

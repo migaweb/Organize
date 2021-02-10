@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Organize.Shared.Contracts;
 using Organize.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,14 @@ namespace Organize.WASM.Components
     public string ColorPrefix { get; set; }
     [Parameter]
     public BaseItem Item { get; set; }
+
+    [Inject]
+    private IUserItemManager UserItemManager { get; set; }
+
+    public async Task ChangeIsDone()
+    {
+      Item.IsDone = !Item.IsDone;
+      await UserItemManager.UpdateAsync(Item);
+    }
   }
 }
