@@ -4,9 +4,9 @@
     DotNet.invokeMethodAsync("Organize.WASM", "OnResize");
 });
 
-window.blazorDimension = {
-    getWidth: () => window.innerWidth
-};
+//window.blazorDimension = {
+    
+//};
 
 window.blazorResize = {
     assignments: [],

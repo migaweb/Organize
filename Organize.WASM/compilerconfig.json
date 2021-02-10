@@ -26,5 +26,13 @@
   {
     "outputFile": "wwwroot/css/components/itemEdit.css",
     "inputFile": "wwwroot/css/components/itemEdit.scss"
+  },
+  {
+    "outputFile": "Components/ItemEdit.razor.css",
+    "inputFile": "Components/ItemEdit.razor.scss"
+  },
+  {
+    "outputFile": "Components/ItemsList.razor.css",
+    "inputFile": "Components/ItemsList.razor.scss"
   }
 ]

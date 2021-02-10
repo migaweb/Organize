@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace Organize.WASM.Shared
 {
-  public partial class MainLayout: LayoutComponentBase, IDisposable
+  public partial class MainLayout: LayoutComponentBase, IAsyncDisposable
   {
     private DotNetObjectReference<MainLayout> _dotNetReference;
+    private IJSObjectReference _module;
 
     [Inject]
     private ICurrentUserService CurrentUserService { get; set; }
@@ -64,7 +65,9 @@ namespace Organize.WASM.Shared
     {
       await base.OnInitializedAsync();
 
-      var width = await JSRuntime.InvokeAsync<int>("blazorDimension.getWidth");
+      //var width = await JSRuntime.InvokeAsync<int>("blazorDimension.getWidth");
+      _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./js/jsIsolation.js");
+      var width = await _module.InvokeAsync<int>("getWidth");
       CheckUsesShortNavText(width);
 
       _dotNetReference = DotNetObjectReference.Create(this);
@@ -98,11 +101,15 @@ namespace Organize.WASM.Shared
       }
     }
 
-    public async void Dispose()
+    // Use the async method when having at least on async call in dispose.
+    public async ValueTask DisposeAsync()
     {
       // .NET references needs to be disposed. Not so important just here.
       _dotNetReference?.Dispose();
       await JSRuntime.InvokeVoidAsync("blazorResize.unRegister", nameof(MainLayout));
+
+      // Dispose the javascript module.
+      await _module.DisposeAsync();
     }
   }
 }

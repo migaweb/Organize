@@ -1,5 +1,12 @@
-﻿@import '../_bootstrap-global.scss';
-@import '../../bootstrap/scss/_forms.scss';
+﻿@import '../wwwroot/css/_bootstrap-global.scss';
+@import '../wwwroot/bootstrap/scss/_forms.scss';
+
+@import 'BaseStyles/_itemElementBase.scss';
+
+::deep .title {
+    @extend .title-base;
+    text-decoration: underline;
+}
 
 .item-create-info {
     display: flex;
@@ -20,5 +27,4 @@
     @extend .form-control;
     width: 100%;
     margin-bottom: 12px;
-
 }

@@ -357,6 +357,13 @@ textarea.form-control, textarea.item-create-input {
     .form-inline .custom-control-label {
       margin-bottom: 0; } }
 
+.title-base, ::deep .title {
+  font-weight: bold;
+  text-transform: uppercase; }
+
+::deep .title {
+  text-decoration: underline; }
+
 .item-create-info {
   display: flex;
   flex-direction: row;
