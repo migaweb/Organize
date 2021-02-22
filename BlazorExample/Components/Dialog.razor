@@ -1,0 +1,36 @@
+﻿@inject IJSRuntime jsRuntime
+@using Entities
+
+<div style="margin:10px;border: solid green 10px;@(Isvisible ? "display:block;" : "display:none;")">
+    <h3>@Header</h3>
+    <p>@Message</p>
+    <div>
+        <button class="btn btn-primary" @onclick="() => HandleButtonClick(Entities.DialogResult.Ok)">Ok</button>
+        <button class="btn btn-danger" @onclick="() => HandleButtonClick(Entities.DialogResult.Cancel)">Cancel</button>
+    </div>
+</div>
+
+@code {
+
+        [Parameter]
+        public string Header { get; set; }
+        [Parameter]
+        public string Message { get; set; }
+
+        [Parameter]
+        public bool Isvisible { get; set; }
+
+        [Parameter]
+        public EventCallback<Entities.DialogResult> DialogClosed { get; set; }
+
+  public Entities.DialogResult DialogResult { get; set; }
+
+    private async void HandleButtonClick(Entities.DialogResult dialogResult)
+    {
+        if ((await jsRuntime.Confirm("Close dialog?")))
+        {
+            DialogResult = dialogResult;
+            await DialogClosed.InvokeAsync(dialogResult);
+        }
+    }
+}
