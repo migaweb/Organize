@@ -1,0 +1,22 @@
+﻿@inject Entities.StateManager stateMan
+@implements IDisposable
+
+<h3>@(stateMan.Counter)</h3>
+<StatefulProperty Id="1"></StatefulProperty>
+<StatefulProperty Id="2"></StatefulProperty>
+<StatefulProperty Id="3"></StatefulProperty>
+
+@code {
+
+  protected override void OnInitialized()
+  {
+      stateMan.OnChange += StateHasChanged;
+  }
+
+  public void Dispose()
+  {
+      stateMan.OnChange -= StateHasChanged;
+  }
+
+
+}

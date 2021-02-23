@@ -1,0 +1,30 @@
+﻿@inject Entities.StateManager stateMan
+@implements IDisposable
+
+<h3>Stateful component @Id</h3>
+<div>
+    @stateMan.Property
+</div>
+<button @onclick="ChangePropertyValue">Change state</button>
+
+@code{
+  
+  [Parameter]
+  public string Id { get; set; }
+
+  protected override void OnInitialized()
+  {
+      stateMan.OnChange += StateHasChanged;
+  }
+
+  private void ChangePropertyValue()
+  {
+      stateMan.SetProperty($"New value set in Component '{Id}': {DateTime.Now}");
+  }
+
+  public void Dispose()
+  {
+      stateMan.OnChange -= StateHasChanged;
+  }
+}
+
